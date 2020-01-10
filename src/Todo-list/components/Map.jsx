@@ -1,9 +1,15 @@
 import React from "react";
 
+// Google maps
 import { GoogleMapProvider, MapBox } from "@googlemap-react/core";
 
+//MUI
+
+// Components
+import MapCenterButton from "./MapCenterButton";
+
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_API_KEY;
-console.log(process.env);
+
 const Map = () => {
   return (
     <GoogleMapProvider>
@@ -21,10 +27,8 @@ const Map = () => {
         useGeometry
         usePlaces
         useVisualization
-        onCenterChanged={() => {
-          console.log("The center of the map has changed.");
-        }}
       />
+      <MapCenterButton />
     </GoogleMapProvider>
   );
 };
