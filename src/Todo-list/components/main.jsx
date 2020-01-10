@@ -3,10 +3,11 @@ import React, { useState } from "react";
 // Components
 import AddItem from "./AddItem";
 import FavoriteList from "./FavoriteList";
+import Map from "./Map";
+
 // MUI
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 
 const Main = () => {
@@ -30,7 +31,9 @@ const Main = () => {
           </Button>
         </div>
       </Grid>
-      <Grid item xs={false} sm={4} md={7} />
+      <Grid item xs={false} sm={4} md={7}>
+        <Map />
+      </Grid>
     </Grid>
   );
 };
