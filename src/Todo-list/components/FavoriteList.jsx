@@ -5,13 +5,16 @@ import FavoriteListItem from "./FavoriteListItem";
 
 // MUI
 import List from "@material-ui/core/List";
+import { useSelector, useDispatch } from "react-redux";
 
 const FavoriteList = () => {
+  const placesList = useSelector(state => state.placesList);
+
   return (
     <List>
-      <FavoriteListItem />
-      <FavoriteListItem />
-      <FavoriteListItem />
+      {placesList.map(place => (
+        <FavoriteListItem place={place} />
+      ))}
     </List>
   );
 };
