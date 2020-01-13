@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 //MUI
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -10,7 +9,7 @@ import Avatar from "@material-ui/core/Avatar";
 // Icons
 import ImageIcon from "@material-ui/icons/Image";
 
-const FavoriteListItem = () => {
+const FavoriteListItem = ({ place }) => {
   return (
     <ListItem>
       <ListItemAvatar>
@@ -18,7 +17,7 @@ const FavoriteListItem = () => {
           <ImageIcon />
         </Avatar>
       </ListItemAvatar>
-      <ListItemText primary="Photos" secondary="Jan 9, 2014" />
+      <ListItemText primary={place.name} secondary={place.address} />
     </ListItem>
   );
 };

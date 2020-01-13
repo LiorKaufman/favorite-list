@@ -1,14 +1,19 @@
 import React, { useState } from "react";
+
+import uuid from "uuid";
+
+// Redux
+import { useDispatch } from "react-redux";
+import { addPlaceAction } from "../../redux/actions/places";
+// MUI
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -32,22 +37,33 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+const value = {
+  name: "",
+  address: ""
+};
 
 const AddItem = () => {
+  const [place, setPlace] = useState(value);
+  const dispatch = useDispatch();
+
+  const addPlace = place => dispatch(addPlaceAction(place));
   const classes = useStyles();
 
+  const handleChange = e => {
+    const name = e.target.name;
+    setPlace({ ...place, [name]: e.target.value });
+  };
+
+  const handleClick = event => {
+    event.preventDefault();
+    console.log(place);
+    addPlace({
+      id: uuid(),
+      name: place.name,
+      address: place.address
+    });
+    setPlace(value);
+  };
   return (
     <div className={classes.paper}>
       <Avatar className={classes.avatar}>
@@ -64,6 +80,8 @@ const AddItem = () => {
           id="todo-input-name"
           label="name"
           name="name"
+          onChange={handleChange}
+          value={place.name}
         />
         <TextField
           variant="outlined"
@@ -71,7 +89,9 @@ const AddItem = () => {
           fullWidth
           label="address"
           id="todo-input-address"
-          autoComplete="current-password"
+          name="address"
+          onChange={handleChange}
+          value={place.address}
         />
         <Button
           type="submit"
@@ -79,6 +99,7 @@ const AddItem = () => {
           variant="contained"
           color="primary"
           className={classes.submit}
+          onClick={handleClick}
         >
           Add
         </Button>
