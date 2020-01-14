@@ -6,14 +6,12 @@ import uuid from "uuid";
 import { useDispatch } from "react-redux";
 import { addPlaceAction } from "../../redux/actions/places";
 // MUI
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -41,9 +39,14 @@ const value = {
   name: "",
   address: ""
 };
+const errorsValue = {
+  nameError: "",
+  addressError: ""
+};
 
 const AddItem = () => {
   const [place, setPlace] = useState(value);
+  const [errors, setErrors] = useState(errorsValue);
   const dispatch = useDispatch();
 
   const addPlace = place => dispatch(addPlaceAction(place));
@@ -51,43 +54,70 @@ const AddItem = () => {
 
   const handleChange = e => {
     const name = e.target.name;
+    const errorName = `${name}Error`;
     setPlace({ ...place, [name]: e.target.value });
+    setErrors({ ...errors, [errorName]: "" });
+    console.log(place);
+    console.log(errors);
+  };
+
+  const checkErrors = () => {
+    for (let key in errors) {
+      if (errors[key] === "Cannot be left blank") {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleErrors = () => {
+    for (let key in place) {
+      const errorName = `${key}Error`;
+      if (place[key].trim() === "") {
+        setErrors({ ...errors, [errorName]: "Cannot be left blank" });
+        return false;
+      }
+    }
+    return true;
   };
 
   const handleClick = event => {
     event.preventDefault();
-    console.log(place);
-    addPlace({
-      id: uuid(),
-      name: place.name,
-      address: place.address
-    });
-    setPlace(value);
+    handleErrors();
+    if (handleErrors()) {
+      addPlace({
+        id: uuid(),
+        name: place.name,
+        address: place.address
+      });
+      setPlace(value);
+    }
   };
   return (
     <div className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
       <Typography component="h1" variant="h5">
-        Add a new favorite location
+        Add a new location
       </Typography>
       <form className={classes.form} noValidate>
         <TextField
+          error={Boolean(errors.nameError)}
+          helperText={Boolean(errors.nameError) ? errors.nameError : ""}
           variant="outlined"
           margin="normal"
           fullWidth
           id="todo-input-name"
-          label="name"
+          label="Name"
           name="name"
           onChange={handleChange}
           value={place.name}
         />
         <TextField
+          error={Boolean(errors.addressError)}
+          helperText={Boolean(errors.addressError) ? errors.addressError : ""}
           variant="outlined"
           margin="normal"
           fullWidth
-          label="address"
+          label="Address"
           id="todo-input-address"
           name="address"
           onChange={handleChange}
@@ -103,18 +133,6 @@ const AddItem = () => {
         >
           Add
         </Button>
-        <Grid container>
-          <Grid item xs>
-            <Link href="#" variant="body2">
-              Forgot password?
-            </Link>
-          </Grid>
-          <Grid item>
-            <Link href="#" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
-          </Grid>
-        </Grid>
       </form>
     </div>
   );
