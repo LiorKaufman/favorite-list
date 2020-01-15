@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PlacesAutoComplete({ onChange, value, reset }) {
+export default function PlacesAutoComplete({ onChange, value }) {
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState([]);
@@ -77,15 +77,17 @@ export default function PlacesAutoComplete({ onChange, value, reset }) {
         renderInput={params => (
           <TextField
             {...params}
-            label="Add a location"
+            label="Search for a location address"
             variant="outlined"
             fullWidth
             onChange={handleChange}
           />
         )}
         onChange={(event, value) => {
-          const address = value.description;
-          onChange(address);
+          if (value) {
+            const address = value.description;
+            onChange(address);
+          }
         }}
         renderOption={option => {
           const matches =
