@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import uuid from "uuid";
+import Geocode from "react-geocode";
 
 import PlacesAutoComplete from "./PlacesAutoComplete";
 
@@ -13,6 +14,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { GoogleMapContext } from "@googlemap-react/core";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -21,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-start",
-    alignContent: "flex-start,"
+    alignContent: "flex-start"
   },
   avatar: {
     margin: theme.spacing(1),
@@ -35,7 +37,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2)
   }
 }));
-
 const value = {
   name: "",
   address: ""
@@ -45,10 +46,15 @@ const errorsValue = {
   addressError: ""
 };
 
+const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_API_KEY;
+Geocode.setApiKey(GOOGLE_MAPS_API_KEY);
+Geocode.setLanguage("en");
+
 const AddItem = () => {
   const [place, setPlace] = useState(value);
   const [errors, setErrors] = useState(errorsValue);
   const dispatch = useDispatch();
+  const { state } = useContext(GoogleMapContext);
 
   const addPlace = place => dispatch(addPlaceAction(place));
   const classes = useStyles();
@@ -78,21 +84,38 @@ const AddItem = () => {
   const resetForm = () => {
     setPlace(value);
   };
+
+  const centerMap = center => {
+    state.map && state.map.setCenter(center);
+  };
   const handleClick = event => {
     event.preventDefault();
     handleErrors();
     if (handleErrors()) {
-      addPlace({
-        id: uuid(),
-        name: place.name,
-        address: place.address
-      });
+      Geocode.fromAddress(place.address).then(
+        response => {
+          const { lat, lng } = response.results[0].geometry.location;
+          const newMarker = {
+            id: uuid(),
+            name: place.name,
+            address: place.address,
+            position: { lat, lng },
+            show: true
+          };
+          addPlace(newMarker);
+          centerMap({ lat, lng });
+        },
+        error => {
+          console.error(error);
+        }
+      );
     }
+
     resetForm();
   };
   return (
     <div className={classes.paper}>
-      <Typography component="h1" variant="h5">
+      <Typography component="h1" variant="h5" style={{ fontWeight: "bold" }}>
         Add a new location
       </Typography>
       <form className={classes.form} noValidate>
@@ -109,11 +132,7 @@ const AddItem = () => {
           value={place.name}
         />
 
-        <PlacesAutoComplete
-          onChange={handleAddress}
-          value={place.address}
-          reset={resetForm}
-        />
+        <PlacesAutoComplete onChange={handleAddress} value={place.address} />
 
         <Button
           type="submit"

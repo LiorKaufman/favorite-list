@@ -12,6 +12,7 @@ import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core";
 import { GoogleMapProvider } from "@googlemap-react/core";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,12 +21,15 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(2),
     textAlign: "center",
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
+    border: "1px solid"
   }
 }));
 
 const Main = () => {
   const [view, setView] = useState(true);
+  const placesList = useSelector(state => state.placesList);
+
   const classes = useStyles();
 
   const toggleView = () => {
@@ -45,7 +49,7 @@ const Main = () => {
             style={{ position: "relative", marginTop: "2rem" }}
           >
             <Paper className={classes.paper}>
-              {view ? <AddItem /> : <FavoriteList />}
+              {view ? <AddItem /> : <FavoriteList placesList={placesList} />}
             </Paper>
             <div
               style={{
@@ -60,7 +64,7 @@ const Main = () => {
             </div>
           </Grid>
           <Grid item xs={false} sm={4} md={7}>
-            <Map />
+            <Map placesList={placesList} />
           </Grid>
         </Grid>
       </GoogleMapProvider>

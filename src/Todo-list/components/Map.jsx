@@ -10,10 +10,11 @@ import Spinner from "@material-ui/core/CircularProgress";
 
 // Components
 import MapCenterButton from "./MapCenterButton";
+import MapMarker from "./MapMarker";
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_API_KEY;
 
-const Map = () => {
+const Map = ({ placesList }) => {
   const [position, error] = useCurrentPosition();
 
   const newCenter = () => {
@@ -49,6 +50,9 @@ const Map = () => {
             usePlaces
             useVisualization
           />
+          {placesList.map(marker => (
+            <MapMarker marker={marker} key={marker.id} />
+          ))}
           <MapCenterButton center={userLocation} />
         </div>
       );
