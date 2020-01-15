@@ -2,14 +2,15 @@ import React, { useState } from "react";
 
 import uuid from "uuid";
 
+import PlacesAutoComplete from "./PlacesAutoComplete";
+
 // Redux
 import { useDispatch } from "react-redux";
 import { addPlaceAction } from "../../redux/actions/places";
+
 // MUI
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -57,17 +58,10 @@ const AddItem = () => {
     const errorName = `${name}Error`;
     setPlace({ ...place, [name]: e.target.value });
     setErrors({ ...errors, [errorName]: "" });
-    console.log(place);
-    console.log(errors);
   };
 
-  const checkErrors = () => {
-    for (let key in errors) {
-      if (errors[key] === "Cannot be left blank") {
-        return true;
-      }
-    }
-    return false;
+  const handleAddress = address => {
+    setPlace({ ...place, address: address });
   };
 
   const handleErrors = () => {
@@ -81,6 +75,9 @@ const AddItem = () => {
     return true;
   };
 
+  const resetForm = () => {
+    setPlace(value);
+  };
   const handleClick = event => {
     event.preventDefault();
     handleErrors();
@@ -90,8 +87,8 @@ const AddItem = () => {
         name: place.name,
         address: place.address
       });
-      setPlace(value);
     }
+    resetForm();
   };
   return (
     <div className={classes.paper}>
@@ -111,18 +108,13 @@ const AddItem = () => {
           onChange={handleChange}
           value={place.name}
         />
-        <TextField
-          error={Boolean(errors.addressError)}
-          helperText={Boolean(errors.addressError) ? errors.addressError : ""}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          label="Address"
-          id="todo-input-address"
-          name="address"
-          onChange={handleChange}
+
+        <PlacesAutoComplete
+          onChange={handleAddress}
           value={place.address}
+          reset={resetForm}
         />
+
         <Button
           type="submit"
           fullWidth
