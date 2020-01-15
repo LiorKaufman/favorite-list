@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 
 // Components
 import FavoriteListItem from "./FavoriteListItem";
+import uuid from "uuid";
 
 // MUI
 import List from "@material-ui/core/List";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Divider from "@material-ui/core/Divider";
 
 const FavoriteList = () => {
@@ -15,8 +16,8 @@ const FavoriteList = () => {
     <List>
       <Divider />
       {placesList.map(place => (
-        <div>
-          <FavoriteListItem place={place} key={place.id} />
+        <div key={uuid()}>
+          <FavoriteListItem place={place} />
           <Divider />
         </div>
       ))}

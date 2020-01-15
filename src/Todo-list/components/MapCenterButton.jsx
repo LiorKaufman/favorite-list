@@ -7,22 +7,17 @@ import { CustomControl, GoogleMapContext } from "@googlemap-react/core";
 import IconButton from "@material-ui/core/IconButton";
 import CenterIcon from "@material-ui/icons/GpsFixed";
 
-const MapCenterButton = () => {
+const MapCenterButton = ({ center }) => {
   const { state } = useContext(GoogleMapContext);
   return (
     <CustomControl bindingPosition="BOTTOM_LEFT">
       <IconButton
         style={{ backgroundColor: "lightGrey", marginBottom: "1rem" }}
+        onClick={() => {
+          state.map && state.map.setCenter(center);
+        }}
       >
-        <CenterIcon
-          onClick={() => {
-            state.map &&
-              state.map.setCenter({
-                lat: 40.7128,
-                lng: -74.006
-              });
-          }}
-        />
+        <CenterIcon />
       </IconButton>
     </CustomControl>
   );
